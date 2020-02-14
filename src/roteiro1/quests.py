@@ -21,7 +21,7 @@ def getVerticesNotAdj(grafo):
                 verticeAdj = verticeAdj.replace(node, "").replace("-", "")
                 ## Adicionando o vértice adjacente, já tratado, ao conjunto de adjacentes
                 verticesAdj.add(verticeAdj)
-        
+
         verticesNAdj = [node + "-" + v for v in grafo.N if v not in list(verticesAdj) and v!=node]
         paresNAdj.extend(verticesNAdj)
     
@@ -79,6 +79,8 @@ def grau(grafo, verticeC):
     return [aresta for aresta in grafo.A if verticeC in grafo.A[aresta]]
 
 # F) Esse grafo é completo?
+def ehCompleto(grafo):
+    return getVerticesNotAdj(grafo) == []
 
 # G) Para essa atividade foi criado um conjunto de casos de teste. Use-o para testar seu módulo em Python.
         #https://drive.google.com/file/d/1fjPhfXAIe3AoawVogPJEdW978-BubOvY/view?usp=sharing
