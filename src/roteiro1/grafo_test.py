@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 import unittest
 from grafo import *
 
@@ -91,4 +94,7 @@ class TestGrafo(unittest.TestCase):
         self.assertFalse((self.g_l2.eh_completo()))
         self.assertFalse((self.g_l3.eh_completo()))
         self.assertTrue((self.g_l4.eh_completo()))
+
+        ## http://mathonline.wikidot.com/complete-graphs
         self.assertTrue((self.g_l5.eh_completo()))
+        ## tem laço
