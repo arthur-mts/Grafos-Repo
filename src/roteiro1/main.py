@@ -4,9 +4,14 @@ from grafo import Grafo
 from quests import *
 from grafo_test import TestGrafo
 
-g_l4 = Grafo(['D'], {'a2':'D-D'})
 
-g_l4.eh_completo()
+## Casos de teste adicionais que não foram considerados na implementação do grafo_test
+
+g_1 = Grafo(['C','D','A'], {'a1': 'C-D', 'a2':'C-D','a3':'D-A','a4':'A-A'})
+print(g_1.eh_completo())
+
+g_2 = Grafo(['A'], {})
+print(g_2.eh_completo())
 
 teste = TestGrafo()
 

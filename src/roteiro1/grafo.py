@@ -214,11 +214,17 @@ class Grafo:
 
     # F) Esse self é completo?
     def eh_completo(self):
-        haLaco = self.ha_laco()
-        haPar = self.ha_paralelas()
 
-        vertAdj = self.vertices_nao_adjacentes()
-        return (len(vertAdj) == len(self.N) and not haLaco and not haPar) or (len(self.N) == 1 and haLaco)
+        for vertice in self.N:
+            arestas = self.A.values()
+            ## Verificando vertices adjacentes e únicos para cada aresta
+            arestas_adj = set([aresta for aresta in arestas if vertice in aresta and aresta!=aresta[::-1]])
+            
+            ## Comparando se o vertice se conecta com todos os distintos adjacentes
+            if(len(arestas_adj) < len(self.N) - 1): 
+                return False
+        
+        return True
 
     # G) Para essa atividade foi criado um conjunto de casos de teste. Use-o para testar seu módulo em Python.
             #https://drive.google.com/file/d/1fjPhfXAIe3AoawVogPJEdW978-BubOvY/view?usp=sharing
