@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 
-
+## Dupla: Arthur Mauricio e Jonatas Duarte
 class VerticeInvalidoException(Exception):
     pass
 
