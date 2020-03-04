@@ -234,28 +234,26 @@ class Grafo:
     def dfs_generator(self, raizDFS):
         # Se o vertice ESTÁ na lista visitados, ele foi visitado. Senão, ele não foi visitado
         visitados = set()
+        dfs_list = [raizDFS]
         # NADA
         # DIRECIONADO
         # RETORNO
         arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"]) for nomeAresta in self.A.keys()])
         pai = raizDFS
 
-        arvoreDFS = Grafo(N=self.N)
-
         while(True):
             visitados.add(pai)
             arestasFilhas = self.arestas_sobre_vertice(pai)
-
-            # Usaremos o vértice de maior grau como o nosso pai
             for filha in arestasFilhas:
-                ## arestas[filha][1] != "DIRECIONADO"
                 if(arestas[filha][1] != "RETORNO"):
                     destino = arestas[filha][0].replace(pai, "").replace("-","")
                     if(arestas[filha][1] == "NADA"):
                         if(not destino in visitados):
                             arestas[filha][1] = "DIRECIONADO"
                             #arvoreDFS.adicionaVertice(destino)
-                            arvoreDFS.adicionaAresta(filha, arestas[filha][0])
+                            dfs_list.append(filha)
+                            dfs_list.append(destino)
+                           # arvoreDFS.adicionaAresta(filha, arestas[filha][0])
                             pai = destino
                             break
                         else:
@@ -266,28 +264,18 @@ class Grafo:
 
                     else:
                         arestas[filha][1] = "RETORNO"
-                        #pai = destino
-
-
-                    # if self.grau(filhaCorrente) > maiorG:
-                    #     maiorG = self.grau(filhaCorrente)
-                    #     maiorFilha = filhaCorrente
-                    #     maiorAresta = filha
-            
-
-            
-            # if(arestas[maiorAresta][1] == "NADA"):
-            #     if(not maiorFilha in visitados):
-            #         arestas[maiorAresta][1] = "DIRECIONADO"
-            #         arvoreDFS.adicionaVertice(maiorFilha)
-            #         arvoreDFS.adicionaAresta(maiorAresta, arestas[maiorAresta])
-            #         #isitados.add(pai)
-            #         pai = maiorFilha
-            #         arestas[maiorAresta][1] = "RETORNO"
-      
+                
+                
+                elif(all([arestas[arestaFilhaCorr][1] ==   "RETORNO" for arestaFilhaCorr in arestasFilhas])):
+                    pai = arestas[arestasFilhas[0]][0].replace(pai, "").replace("-","")
+                    break
 
             if(len(visitados) == len(self.N)):
                 break
 
         #arvoreDFS = Grafo(N=self.N, A = {key: value[0] for (key, value) in arestas.items() if value[1]=="DIRECIONADO"})
-        return arvoreDFS
+        return dfs_list
+        
+        
+
+
