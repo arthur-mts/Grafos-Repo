@@ -272,8 +272,6 @@ class Grafo:
 
             if(len(visitados) == len(self.N)):
                 break
-
-        #arvoreDFS = Grafo(N=self.N, A = {key: value[0] for (key, value) in arestas.items() if value[1]=="DIRECIONADO"})
         return dfs_list
         
         

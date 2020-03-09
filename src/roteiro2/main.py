@@ -1,18 +1,5 @@
 from grafo import *
 
-g1 = Grafo(['A','B','C','D','E'], {'1':'A-B','2':'A-C','3':'A-D','4':'C-D'})
-g_p = Grafo(N=['J','C','E','P','M','T','Z'], A={'a1': 'J-C', 'a2':'C-E','a3':'C-E','a4':'C-P', 'a5':'C-P', 'a6':'C-M', 'a7':'C-T', 'a8':'M-T', 'a9':'T-Z'})
-
-print(g_p.dfs_generator('J'))
-
-['J', 'a1', 'C', 'a2', 'E', 'a4', 'P', 'a6', 'M', 'a8', 'T', 'a9', 'Z']
-
-['J', 'a1', 'C', 'a3', 'E', 'a5', 'P', 'a6', 'M', 'a8', 'T', 'a9', 'Z']
-
-
-# N = {J, C, E, P, M, T, Z}
-# A = {a1, a2, a3, a4, a5, a6, a7, a8, a9}
-# g(a1) = JC, g(a2) = CE, g(a3) = CE, g(a4) = CP, g(a5) = CP, g(a6) = CM, g(a7) = CT, g(a8) = MT, g(a9) = TZ
-
+g1 = Grafo(N=["A","B","C","D","E","F","G","H","I"],A={"1":"A-B","2":"B-D","3":"B-C","4":"C-D","5":"C-E","6":"D-G","7":"E-F","8":"F-G","9":"E-H","10":"F-H","11":"G-H","12":"H-I"})
 
 print(g1.dfs_generator('E'))
