@@ -279,3 +279,20 @@ class Grafo:
         
 
 
+    def caminho(self, n):
+        if(n < len(self.N) and n > 0):
+            return self.dfs_generator(self.N[0])[:n*2+1]
+        else:
+            return False
+
+    def conexo(self, parameter_list):
+        pass
+
+
+    def ha_ciclo(self):
+        if(self.ha_laco()):
+            return True
+        else:
+            for vertice in self.N:
+                raiz = vertice
+                
