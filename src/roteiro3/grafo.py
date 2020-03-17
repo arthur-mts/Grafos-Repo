@@ -266,7 +266,7 @@ class Grafo:
                         arestas[filha][1] = "RETORNO"
                 
                 
-                elif(all([arestas[arestaFilhaCorr][1] ==   "RETORNO" for arestaFilhaCorr in arestasFilhas])):
+                elif(all([arestas[arestaFilhaCorr][1] == "RETORNO" for arestaFilhaCorr in arestasFilhas])):
                     pai = arestas[arestasFilhas[0]][0].replace(pai, "").replace("-","")
                     break
 
@@ -280,14 +280,47 @@ class Grafo:
 
 
     def caminho(self, n):
+        ## arestasVisitadas = self.A
         if(n < len(self.N) and n > 0):
-            return self.dfs_generator(self.N[0])[:n*2+1]
+            for raizC in self.N:
+                raiz = raizC
+                arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"]) for nomeAresta in self.A.keys()])
+                ant = None
+                countTamanho = 0
+
+                res = [raiz]
+
+                while(countTamanho < n):
+                    temCaminho = False
+                    for arestaC in self.arestas_sobre_vertice(raiz):
+                        if(arestas[arestaC][1] == "NADA" and not arestas[arestaC][0].replace(raiz, "").replace("-","") in res):
+                    ##  if(arestaC in arestasVisitadas):
+                            arestas[arestaC][1] = "VISITADA"
+
+                            res.append(arestaC)
+
+                        ##  arestasVisitadas.remove(arestaC)
+                            countTamanho+=1
+                            ant = raiz
+                            raiz = arestas[arestaC][0].replace(raiz, "").replace("-","")
+                            res.append(raiz)
+                            temCaminho = True
+                            break
+                    
+                    if not temCaminho:
+                        raiz = ant
+                        countTamanho-=1
+
+                return res
         else:
             return False
 
-    def conexo(self, parameter_list):
-        pass
+    def conexo(self):
+        listaAdj = []
+        for vert in self.N:
+            listaAdj.append(vert)
 
+        return ((len(self.dfs_generator(self.N[0]))-1)/2) + 1 == len(self.N)
 
     def ha_ciclo(self):
         if(self.ha_laco()):
