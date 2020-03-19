@@ -290,11 +290,14 @@ class Grafo:
             if(len(visitados) == len(self.N)):
                 break
 
-        #arvoreDFS = Grafo(N=self.N, A = {key: value[0] for (key, value) in arestas.items() if value[1]=="DIRECIONADO"})
+        # arvoreDFS = Grafo(N=self.N, A = {key: value[0] for (key, value) in arestas.items() if value[1]=="DIRECIONADO"})
         return dfs_list
 
+    def vertices_filhos(self, vertice):
+        return set([aresta.replace("-", "").replace(vertice, "") for aresta in self.arestas_sobre_vertice(vertice)])
+
     def caminho(self, n):
-        ## arestasVisitadas = self.A
+        # arestasVisitadas = self.A
         if(n < len(self.N) and n > 0):
             for raizC in self.N:
                 raiz = raizC
@@ -349,4 +352,37 @@ class Grafo:
             return True
         else:
             for vertice in self.N:
-                raiz = vertice
+                visitados = set()
+                arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"])
+                                for nomeAresta in self.A.keys()])
+                pai = vertice
+                # Usando a mesma lógica utilizada no método que gera a arvore dfs
+                # percorremos o grafo a partir de todos os vertices possiveis verificando
+                # se em algum desses caminhos temos duas ligações validas com a raiz.
+                caminho = [pai]
+                while(len(visitados) != len(self.N)):
+                    visitados.add(pai)
+                    arestasFilhas = self.arestas_sobre_vertice(pai)
+
+                    for filha in arestasFilhas:
+                        if(arestas[filha][1] != "RETORNO"):
+                            destino = arestas[filha][0].replace(
+                                pai, "").replace("-", "")
+                            if(arestas[filha][1] == "NADA"):
+                                if(not destino in visitados):
+                                    arestas[filha][1] = "DIRECIONADO"
+                                    caminho.append(filha)
+                                    caminho.append(destino)
+                                    pai = destino
+                                    break
+                                else:
+                                    return True
+
+                            else:
+                                arestas[filha][1] = "RETORNO"
+
+                        elif(all([arestas[arestaFilhaCorr][1] == "RETORNO" for arestaFilhaCorr in arestasFilhas])):
+                            pai = arestas[caminho[caminho.index(
+                                pai)-1]][0].replace(pai, "").replace("-", "")
+                            break
+        return False
