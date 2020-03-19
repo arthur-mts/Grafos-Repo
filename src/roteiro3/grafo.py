@@ -1,11 +1,14 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from copy import copy
+
 
 class VerticeInvalidoException(Exception):
     pass
 
+
 class ArestaInvalidaException(Exception):
     pass
+
 
 class Grafo:
 
@@ -21,13 +24,15 @@ class Grafo:
         '''
         for v in N:
             if not(Grafo.verticeValido(v)):
-                raise VerticeInvalidoException('O vértice ' + v + ' é inválido')
+                raise VerticeInvalidoException(
+                    'O vértice ' + v + ' é inválido')
 
         self.N = N
 
         for a in A:
             if not(self.arestaValida(A[a])):
-                raise ArestaInvalidaException('A aresta ' + A[a] + ' é inválida')
+                raise ArestaInvalidaException(
+                    'A aresta ' + A[a] + ' é inválida')
 
         self.A = A
 
@@ -43,18 +48,18 @@ class Grafo:
         :return: Um valor booleano que indica se a aresta está no formato correto.
         '''
 
-        #Não pode haver mais de um caractere separador
+        # Não pode haver mais de um caractere separador
         if aresta.count(Grafo.SEPARADOR_ARESTA) != Grafo.QTDE_MAX_SEPARADOR:
             return False
 
-        #Índice do elemento separador
+        # Índice do elemento separador
         i_traco = aresta.index(Grafo.SEPARADOR_ARESTA)
 
-        #O caractere separador não pode ser o primeiro ou o último caractere da aresta
+        # O caractere separador não pode ser o primeiro ou o último caractere da aresta
         if i_traco == 0 or aresta[-1] == Grafo.SEPARADOR_ARESTA:
             return False
 
-        #Verifica se as arestas antes de depois do elemento separador existem no Grafo
+        # Verifica se as arestas antes de depois do elemento separador existem no Grafo
         if not(self.existeVertice(aresta[:i_traco])) or not(self.existeVertice(aresta[i_traco+1:])):
             return False
 
@@ -124,91 +129,90 @@ class Grafo:
 
         for v in range(len(self.N)):
             grafo_str += self.N[v]
-            if v < (len(self.N) - 1):  #Só coloca a vírgula se não for o último vértice
+            if v < (len(self.N) - 1):  # Só coloca a vírgula se não for o último vértice
                 grafo_str += ", "
 
         grafo_str += '\n'
 
         for i, a in enumerate(self.A):
             grafo_str += self.A[a]
-            if not(i == len(self.A) - 1): #Só coloca a vírgula se não for a última aresta
+            if not(i == len(self.A) - 1):  # Só coloca a vírgula se não for a última aresta
                 grafo_str += ", "
 
         return grafo_str
 
-
-        #Q2
-    #A) Encontre todos os pares de vértices não adjacentes.
+        # Q2
+    # A) Encontre todos os pares de vértices não adjacentes.
 
     def vertices_nao_adjacentes(self):
-        #Iniciando lista que conterá os pares adjacentes
+        # Iniciando lista que conterá os pares adjacentes
         paresNAdj = list()
-        #Percorrendo o conjunto de vértices, chamando-os de node
+        # Percorrendo o conjunto de vértices, chamando-os de node
         for node in self.N:
-            #A estrutura set não armazena dois elementos iguais
-            #será nosso conjunto de adjacentes, a fim de evitar vértices repetidos
+            # A estrutura set não armazena dois elementos iguais
+            # será nosso conjunto de adjacentes, a fim de evitar vértices repetidos
             verticesAdj = set()
 
-            #Percorrendo o conjunto de arestas para cada um dos vértices
+            # Percorrendo o conjunto de arestas para cada um dos vértices
             for aresta in self.A:
-                #Procurando os vértices adjacentes dentro de cada 
-                #subconjunto de A(aresta) em relação ao vértice atual
+                # Procurando os vértices adjacentes dentro de cada
+                # subconjunto de A(aresta) em relação ao vértice atual
                 if(node in self.A[aresta]):
                     verticeAdj = self.A[aresta]
-                    #Removendo o vértice que está conectado com o atual da repetição
-                    #Ex: J-C --> C
+                    # Removendo o vértice que está conectado com o atual da repetição
+                    # Ex: J-C --> C
                     verticeAdj = verticeAdj.replace(node, "").replace("-", "")
-                    #Adicionando o vértice adjacente, já tratado, ao conjunto de adjacentes
+                    # Adicionando o vértice adjacente, já tratado, ao conjunto de adjacentes
                     verticesAdj.add(verticeAdj)
-            
-            verticesNAdj = [paresNAdj.append(node + "-" + v) for v in self.N if v not in list(verticesAdj)]
-        
-        #Ex: Se considerarmos que J-M é o mesmo par que M-J,
-        #é necessários excluirmos os pares palíndromos:
 
-        #Retorno da nossa lista de pares não adjacentes
+            verticesNAdj = [paresNAdj.append(
+                node + "-" + v) for v in self.N if v not in list(verticesAdj)]
+
+        # Ex: Se considerarmos que J-M é o mesmo par que M-J,
+        # é necessários excluirmos os pares palíndromos:
+
+        # Retorno da nossa lista de pares não adjacentes
         return paresNAdj
-            
 
+    # B) Há algum vértice adjacente a ele mesmo? (Retorne True ou False)
 
-    #B) Há algum vértice adjacente a ele mesmo? (Retorne True ou False)
     def ha_laco(self):
-        #Para cada vértice vemos suas arestas
+        # Para cada vértice vemos suas arestas
         for vertice in self.A:
-            #Se a função da aresta é palíndromo, ela é um laço
-            #sedo um laço, sabemos que é adjacente a si mesmo
+            # Se a função da aresta é palíndromo, ela é um laço
+            # sedo um laço, sabemos que é adjacente a si mesmo
             if(self.A[vertice] == self.A[vertice][::-1]):
                 return True
-                
+
         return False
 
-    #C) Há arestas paralelas? (Retorne True ou False)
+    # C) Há arestas paralelas? (Retorne True ou False)
     def ha_paralelas(self):
-        #Transformamos os valores do dicionário de arestas em uma lista
+        # Transformamos os valores do dicionário de arestas em uma lista
         allVertices = list(self.A.values())
-        #Percorremos os vertices vendo se possui mais de uma conexão igual(aresta)
-        #ou vendo se possui uma aresta palindromo, que também seria paralela
+        # Percorremos os vertices vendo se possui mais de uma conexão igual(aresta)
+        # ou vendo se possui uma aresta palindromo, que também seria paralela
         for vertice in allVertices:
             if(allVertices.count(vertice) > 1 or vertice[::-1] in allVertices):
                 return True
 
         return False
 
+    # D) Qual o grau de um vértice arbitrário?
 
-    #D) Qual o grau de um vértice arbitrário?
     def grau(self, verticeC):
-        #iniciamos nosso contador para grau
+        # iniciamos nosso contador para grau
         count = 0
 
         for aresta in self.A:
-            #Percorremos os vértices e verificamos quantas vezes
-            #o vértice passado se repete no conjunto de arestas
+            # Percorremos os vértices e verificamos quantas vezes
+            # o vértice passado se repete no conjunto de arestas
             if(verticeC in self.A[aresta]):
-                count+= 1 
+                count += 1
         return count
 
+    # E) Quais arestas incidem sobre um vértice N arbitrário?
 
-    #E) Quais arestas incidem sobre um vértice N arbitrário?
     def arestas_sobre_vertice(self, verticeC):
         return [aresta for aresta in self.A if verticeC in self.A[aresta]]
 
@@ -217,19 +221,20 @@ class Grafo:
 
         for vertice in self.N:
             arestas = self.A.values()
-            #Verificando vertices adjacentes e únicos para cada aresta
-            arestas_adj = set([aresta for aresta in arestas if vertice in aresta and aresta!=aresta[::-1]])
-            
-            #Comparando se o vertice se conecta com todos os distintos adjacentes
-            if(len(arestas_adj) < len(self.N) - 1): 
+            # Verificando vertices adjacentes e únicos para cada aresta
+            arestas_adj = set(
+                [aresta for aresta in arestas if vertice in aresta and aresta != aresta[::-1]])
+
+            # Comparando se o vertice se conecta com todos os distintos adjacentes
+            if(len(arestas_adj) < len(self.N) - 1):
                 return False
-        
+
         return True
 
-    #G) Para essa atividade foi criado um conjunto de casos de teste. Use-o para testar seu módulo em Python.
-            #https://drive.google.com/file/d/1fjPhfXAIe3AoawVogPJEdW978-BubOvY/view?usp=sharing
-            
-    #H) As funções devem ser criadas dentro do arquivo self.py
+    # G) Para essa atividade foi criado um conjunto de casos de teste. Use-o para testar seu módulo em Python.
+        # https://drive.google.com/file/d/1fjPhfXAIe3AoawVogPJEdW978-BubOvY/view?usp=sharing
+
+    # H) As funções devem ser criadas dentro do arquivo self.py
 
     def dfs_generator(self, raizDFS):
         # Se o vertice ESTÁ na lista visitados, ele foi visitado. Senão, ele não foi visitado
@@ -238,22 +243,24 @@ class Grafo:
         # NADA
         # DIRECIONADO
         # RETORNO
-        arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"]) for nomeAresta in self.A.keys()])
+        arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"])
+                        for nomeAresta in self.A.keys()])
         pai = raizDFS
 
         while(True):
             visitados.add(pai)
             arestasFilhas = self.arestas_sobre_vertice(pai)
+            if(arestasFilhas == []):
+                return []
             for filha in arestasFilhas:
                 if(arestas[filha][1] != "RETORNO"):
-                    destino = arestas[filha][0].replace(pai, "").replace("-","")
+                    destino = arestas[filha][0].replace(
+                        pai, "").replace("-", "")
                     if(arestas[filha][1] == "NADA"):
                         if(not destino in visitados):
                             arestas[filha][1] = "DIRECIONADO"
-                            #arvoreDFS.adicionaVertice(destino)
                             dfs_list.append(filha)
                             dfs_list.append(destino)
-                           # arvoreDFS.adicionaAresta(filha, arestas[filha][0])
                             pai = destino
                             break
                         else:
@@ -264,10 +271,20 @@ class Grafo:
 
                     else:
                         arestas[filha][1] = "RETORNO"
-                
-                
+
                 elif(all([arestas[arestaFilhaCorr][1] == "RETORNO" for arestaFilhaCorr in arestasFilhas])):
-                    pai = arestas[arestasFilhas[0]][0].replace(pai, "").replace("-","")
+
+                    # Retornando o caminho pela lista dfs
+                    pai = arestas[dfs_list[dfs_list.index(pai)-1]][0].replace(
+                        pai, "").replace("-", "")
+
+                    # Se percorrer toda a lista dfs de volta, até a raiz original
+                    # então não existe como gerar uma arvore dfs válida para esta
+                    # raiz.
+                    if(pai == raizDFS):
+                        return []
+                    # pai = arestas[arestasFilhas[0]][0].replace(
+                    #     pai, "").replace("-", "")
                     break
 
             if(len(visitados) == len(self.N)):
@@ -275,16 +292,14 @@ class Grafo:
 
         #arvoreDFS = Grafo(N=self.N, A = {key: value[0] for (key, value) in arestas.items() if value[1]=="DIRECIONADO"})
         return dfs_list
-        
-        
-
 
     def caminho(self, n):
         ## arestasVisitadas = self.A
         if(n < len(self.N) and n > 0):
             for raizC in self.N:
                 raiz = raizC
-                arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"]) for nomeAresta in self.A.keys()])
+                arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"])
+                                for nomeAresta in self.A.keys()])
                 ant = None
                 countTamanho = 0
 
@@ -293,34 +308,39 @@ class Grafo:
                 while(countTamanho < n):
                     temCaminho = False
                     for arestaC in self.arestas_sobre_vertice(raiz):
-                        if(arestas[arestaC][1] == "NADA" and not arestas[arestaC][0].replace(raiz, "").replace("-","") in res):
-                    ##  if(arestaC in arestasVisitadas):
+                        if(arestas[arestaC][1] == "NADA" and not arestas[arestaC][0].replace(raiz, "").replace("-", "") in res):
+                            # if(arestaC in arestasVisitadas):
                             arestas[arestaC][1] = "VISITADA"
 
                             res.append(arestaC)
 
-                        ##  arestasVisitadas.remove(arestaC)
-                            countTamanho+=1
+                        # arestasVisitadas.remove(arestaC)
+                            countTamanho += 1
                             ant = raiz
-                            raiz = arestas[arestaC][0].replace(raiz, "").replace("-","")
+                            raiz = arestas[arestaC][0].replace(
+                                raiz, "").replace("-", "")
                             res.append(raiz)
                             temCaminho = True
                             break
-                    
+
                     if not temCaminho:
                         raiz = ant
-                        countTamanho-=1
+                        countTamanho -= 1
 
                 return res
         else:
             return False
 
     def conexo(self):
-        listaAdj = []
-        for vert in self.N:
-            listaAdj.append(vert)
-
-        return ((len(self.dfs_generator(self.N[0]))-1)/2) + 1 == len(self.N)
+        for verticeI in self.N:
+            # Vertice inicio
+            dfs_verticeI = self.dfs_generator(verticeI)
+            for verticeD in self.N:
+                # Vertice destino
+                if verticeD != verticeI and not verticeD in dfs_verticeI:
+                    # Verificar se há caminho entre eles
+                    return False
+        return True
 
     def ha_ciclo(self):
         if(self.ha_laco()):
@@ -328,4 +348,3 @@ class Grafo:
         else:
             for vertice in self.N:
                 raiz = vertice
-                
