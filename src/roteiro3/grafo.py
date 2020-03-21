@@ -165,9 +165,6 @@ class Grafo:
                     # Adicionando o vértice adjacente, já tratado, ao conjunto de adjacentes
                     verticesAdj.add(verticeAdj)
 
-            verticesNAdj = [paresNAdj.append(
-                node + "-" + v) for v in self.N if v not in list(verticesAdj)]
-
         # Ex: Se considerarmos que J-M é o mesmo par que M-J,
         # é necessários excluirmos os pares palíndromos:
 
@@ -298,7 +295,10 @@ class Grafo:
 
     def caminho(self, n):
         # arestasVisitadas = self.A
-        if(n < len(self.N) and n > 0):
+        if(not self.conexo() and n >= len(self.N) - 1) or (self.conexo() and n <= 0 and n > len(self.N)):
+            return False
+        # elif(n < len(self.N) and n > 0):
+        else:
             for raizC in self.N:
                 raiz = raizC
                 arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"])
@@ -331,8 +331,6 @@ class Grafo:
                         countTamanho -= 1
 
                 return res
-        else:
-            return False
 
     def conexo(self):
         # for verticeI in self.N:
