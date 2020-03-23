@@ -294,10 +294,9 @@ class Grafo:
         return set([aresta.replace("-", "").replace(vertice, "") for aresta in self.arestas_sobre_vertice(vertice)])
 
     def caminho(self, n):
-        # arestasVisitadas = self.A
-        if(not self.conexo() and n >= len(self.N) - 1) or (self.conexo() and n <= 0 and n > len(self.N)):
+
+        if (n <= 0) or (n > len(self.N)) or (not self.conexo() and n + 1 > len(self.N)):
             return False
-        # elif(n < len(self.N) and n > 0):
         else:
             for raizC in self.N:
                 raiz = raizC
@@ -312,25 +311,26 @@ class Grafo:
                     temCaminho = False
                     for arestaC in self.arestas_sobre_vertice(raiz):
                         if(arestas[arestaC][1] == "NADA" and not arestas[arestaC][0].replace(raiz, "").replace("-", "") in res):
-                            # if(arestaC in arestasVisitadas):
                             arestas[arestaC][1] = "VISITADA"
-
                             res.append(arestaC)
-
-                        # arestasVisitadas.remove(arestaC)
                             countTamanho += 1
-                            ant = raiz
                             raiz = arestas[arestaC][0].replace(
                                 raiz, "").replace("-", "")
                             res.append(raiz)
                             temCaminho = True
+                            ant = res[res.index(raiz) - 2]
                             break
 
                     if not temCaminho:
-                        raiz = ant
+                        if(len(res) == 1):
+                            break
+                        raiz = res[res.index(raiz) - 2]
+                        res = res[:-2]
                         countTamanho -= 1
+                if(countTamanho == n):
+                    return res
 
-                return res
+            return False
 
     def conexo(self):
         # for verticeI in self.N:

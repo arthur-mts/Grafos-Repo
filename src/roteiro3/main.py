@@ -10,16 +10,5 @@ g2 = Grafo(N=["A", "B", "C", "D", "E"], A={
 
 g3 = Grafo(N=["1", "2", "3", "4", "5"], A={
            "A": "1-2", "B": "2-4", "C": "1-3", "D": "2-5"})
-# print(g1.dfs_generator("Z"))
-# print(g1.caminho(8))
-gdisc = Grafo(N=["A", "B", "C", "D"], A={"1": "A-B", "2": "A-C", "3": "B-C"})
-
-# print(g1.conexo())
-# print(g1.ha_ciclo())
-# print(g2.ha_ciclo())
-# print(g3.ha_ciclo())
-
-
-g_p = Grafo(['J', 'C', 'E', 'P', 'M', 'T', 'Z'], {
-    'a1': 'J-C', 'a2': 'C-E', 'a3': 'C-E', 'a4': 'C-P', 'a5': 'C-P', 'a6': 'C-M', 'a7': 'C-T', 'a8': 'M-T', 'a9': 'T-Z'})
-print(g_p.caminho(4))
+g = Grafo(['A', 'B', 'C'], {'1': 'A-B'})
+print(g.caminho(1))

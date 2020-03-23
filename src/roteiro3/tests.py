@@ -15,11 +15,34 @@ class Test(unittest.TestCase):
         self.g_c = Grafo(N=["A", "B", "C", "D", "E", "F", "G", "H", "I"], A={
             "1": "A-B", "2": "B-D", "3": "B-C", "4": "C-D", "5": "C-E", "6": "D-G", "7": "E-F", "8": "F-G", "9": "E-H", "10": "F-H", "11": "G-H", "12": "H-I"})
 
-        # Grafo disconexto
+        # Grafo disconexo
         self.gdisc = Grafo(N=["A", "B", "C", "D"], A={
             "1": "A-B", "2": "A-C", "3": "B-C"})
+
+        # Grafo disconexo valido
+        self.g_d = Grafo(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+                         {'1': 'A-B', '2': 'B-C', '3': 'C-D', '4': 'B-D', '5': 'A-C', '6': 'E-F', '7': 'F-G', '8': 'G-J', '9': 'J-I', '10': 'I-G'})
+
+        # Grafo único
+        self.g_u = Grafo(['A'])
 
     def testCaminho(self):
         self.assertFalse(self.gdisc.caminho(4))
         self.assertFalse(self.gdisc.caminho(3))
         self.assertListEqual(self.gdisc.caminho(2), ['A', '1', 'B', '3', 'C'])
+
+        self.assertFalse(self.g_d.caminho(0))
+        self.assertFalse(self.g_d.caminho(-1))
+
+        self.assertListEqual(self.g_d.caminho(
+            4), ['E', '6', 'F', '7', 'G', '8', 'J', '9', 'I'])
+
+        self.assertFalse(self.g_d.caminho(12))
+        self.assertFalse(self.g_d.caminho(8))
+        self.assertFalse(self.g_d.caminho(5))
+
+        self.assertListEqual(self.g_p.caminho(
+            3), ['J', 'a1', 'C', 'a6', 'M', 'a8', 'T'])
+        self.assertFalse(self.g_p.caminho(5))
+
+        self.assertFalse(self.g_u.caminho(1))
