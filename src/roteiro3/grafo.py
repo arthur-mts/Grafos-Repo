@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from copy import copy
 
 
@@ -254,7 +255,7 @@ class Grafo:
                     destino = arestas[filha][0].replace(
                         pai, "").replace("-", "")
                     if(arestas[filha][1] == "NADA"):
-                        if(not destino in visitados):
+                        if(not destino in visitados) and destino != '':
                             arestas[filha][1] = "DIRECIONADO"
                             dfs_list.append(filha)
                             dfs_list.append(destino)
@@ -270,19 +271,24 @@ class Grafo:
                         arestas[filha][1] = "RETORNO"
 
                 elif(all([arestas[arestaFilhaCorr][1] == "RETORNO" for arestaFilhaCorr in arestasFilhas])):
-
-                    # Retornando o caminho pela lista dfs
-                    pai = arestas[dfs_list[dfs_list.index(pai)-1]][0].replace(
-                        pai, "").replace("-", "")
-
+                    if(destino == raizDFS):
+                        pai = destino
+                    else:
+                        pai = arestas[filha][0].replace(
+                            pai, "").replace("-", "")
+                    # pai = destino
                     # Se percorrer toda a lista dfs de volta, até a raiz original
                     # então não existe como gerar uma arvore dfs válida para esta
                     # raiz.
+
                     if(pai == raizDFS):
-                        return []
+                        if(all([filho in visitados for filho in self.vertices_filhos(raizDFS)])) and len(self.N) > len(visitados):
+                            return []
+                    break
+                    # else:
+
                     # pai = arestas[arestasFilhas[0]][0].replace(
                     #     pai, "").replace("-", "")
-                    break
 
             if(len(visitados) == len(self.N)):
                 break
@@ -291,7 +297,7 @@ class Grafo:
         return dfs_list
 
     def vertices_filhos(self, vertice):
-        return set([aresta.replace("-", "").replace(vertice, "") for aresta in self.arestas_sobre_vertice(vertice)])
+        return set([self.A[aresta].replace("-", "").replace(vertice, "") for aresta in self.arestas_sobre_vertice(vertice)])
 
     def caminho(self, n):
 
@@ -302,7 +308,6 @@ class Grafo:
                 raiz = raizC
                 arestas = dict([(nomeAresta, [self.A[nomeAresta], "NADA"])
                                 for nomeAresta in self.A.keys()])
-                ant = None
                 countTamanho = 0
 
                 res = [raiz]
@@ -333,17 +338,7 @@ class Grafo:
             return False
 
     def conexo(self):
-        for verticeI in self.N:
-            # Vertice inicio
-            dfs_verticeI = self.dfs_generator(verticeI)
-            for verticeD in self.N:
-                # Vertice destino
-                if verticeD != verticeI and not verticeD in dfs_verticeI:
-                    # Verificar se há caminho entre eles
-                    return False
-        return True
-
-        # return ((len(self.dfs_generator(self.N[0]))-1)/2) + 1 == len(self.N)
+        return ((len(self.dfs_generator(self.N[0]))-1)/2) + 1 == len(self.N)
 
     def ha_ciclo(self):
         if(self.ha_laco()):
@@ -380,7 +375,14 @@ class Grafo:
                                 arestas[filha][1] = "RETORNO"
 
                         elif(all([arestas[arestaFilhaCorr][1] == "RETORNO" for arestaFilhaCorr in arestasFilhas])):
-                            pai = arestas[caminho[caminho.index(
-                                pai)-1]][0].replace(pai, "").replace("-", "")
+                            pai = arestas[filha][0].replace(
+                                pai, "").replace("-", "")
+                            # pai = arestas[caminho[caminho.index(
+                            #     pai)-1]][0].replace(pai, "").replace("-", "")
+                            # pai = arestas[filha][0].replace(
+                            #     pai, "").replace("-", "")
+                            if(pai == vertice):
+                                if(all([filho in visitados for filho in self.vertices_filhos(vertice)])) and len(self.N) > len(visitados):
+                                    pai = vertice
                             break
         return False
