@@ -26,6 +26,8 @@ class Test(unittest.TestCase):
         # Grafo único
         self.g_u = Grafo(['A'])
 
+        self.g_u_d = Grafo(['A', 'B'], {'1': 'A-A'})
+
     def testCaminho(self):
         self.assertFalse(self.gdisc.caminho(4))
         self.assertFalse(self.gdisc.caminho(3))
@@ -46,3 +48,14 @@ class Test(unittest.TestCase):
         self.assertFalse(self.g_p.caminho(5))
 
         self.assertFalse(self.g_u.caminho(1))
+
+    def testConexo(self):
+        self.assertTrue(self.g_p.conexo())
+        self.assertTrue(self.g_a.conexo())
+
+        self.assertTrue(self.g_d.conexo())
+        self.assertTrue(self.g_c.conexo())
+
+        self.assertTrue(self.g_u.conexo())
+
+        self.assertFalse(self.g_u_d.conexo())

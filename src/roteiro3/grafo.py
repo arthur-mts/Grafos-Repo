@@ -333,17 +333,17 @@ class Grafo:
             return False
 
     def conexo(self):
-        # for verticeI in self.N:
-        #     # Vertice inicio
-        #     dfs_verticeI = self.dfs_generator(verticeI)
-        #     for verticeD in self.N:
-        #         # Vertice destino
-        #         if verticeD != verticeI and not verticeD in dfs_verticeI:
-        #             # Verificar se há caminho entre eles
-        #             return False
-        # return True
+        for verticeI in self.N:
+            # Vertice inicio
+            dfs_verticeI = self.dfs_generator(verticeI)
+            for verticeD in self.N:
+                # Vertice destino
+                if verticeD != verticeI and not verticeD in dfs_verticeI:
+                    # Verificar se há caminho entre eles
+                    return False
+        return True
 
-        return ((len(self.dfs_generator(self.N[0]))-1)/2) + 1 == len(self.N)
+        # return ((len(self.dfs_generator(self.N[0]))-1)/2) + 1 == len(self.N)
 
     def ha_ciclo(self):
         if(self.ha_laco()):
