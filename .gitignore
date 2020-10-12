@@ -1,1 +1,5 @@
-__pycahce__
+.vscode/
+__pycache__/
+*.gz
+*.tar
+*.zip
