@@ -5,6 +5,12 @@ from grafo_lib import Grafo
 # python3 -m unittest grafo_teste.GrafoTeste.testCaminhoEuleriano
 class GrafoTeste(unittest.TestCase):
     def setUp(self):
+
+        self.grafo0 = Grafo(['A','B','C'])
+        self.grafo0.adicionaAresta('A-B')
+        self.grafo0.adicionaAresta('B-C')
+        self.grafo0.adicionaAresta('C-A')
+
         self.grafo1 = Grafo(['A','B','C','D'])
         self.grafo1.adicionaAresta('A-B')
         self.grafo1.adicionaAresta('A-B')
@@ -56,3 +62,10 @@ class GrafoTeste(unittest.TestCase):
         self.assertEqual(['A-B', 'A-C', 'B-C', 'B-D'], self.grafo2.caminhoEuleriano())
         self.assertEqual(['D-C', 'C-A', 'D-A', 'D-F', 'C-F', 'C-E', 'E-H', 'H-G', 'E-G', 'E-B', 'G-B', 'D-G'], self.grafo3.caminhoEuleriano())
         self.assertEqual(['D-A', 'D-C', 'C-A', 'A-H', 'E-H', 'C-E', 'C-F', 'D-F', 'D-G', 'E-G', 'E-B', 'G-B', 'H-G'], self.grafo4.caminhoEuleriano())
+
+    def testCicloHamiltoniano(self):
+        self.assertEqual(['A', 'B', 'C'], self.grafo0.ciclo_hamiltoniano())
+        self.assertEqual(['A', 'B', 'D','C'], self.grafo1.ciclo_hamiltoniano())
+        self.assertIsNone(self.grafo2.ciclo_hamiltoniano())
+        self.assertIsNone(self.grafo3.ciclo_hamiltoniano())
+        self.assertIsNone(self.grafo4.ciclo_hamiltoniano())

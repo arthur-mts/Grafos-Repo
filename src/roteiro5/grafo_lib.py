@@ -164,18 +164,6 @@ class Grafo:
 
         return existe
 
-    def remove_vertice(self, V):
-        if (not V in self.N):
-            raise Exception('O vertice não existe')
-        indice = self.N.index(V)
-
-        for linha in self.M:
-            linha.pop(indice)
-
-        self.M.pop(indice)
-        self.N.remove(V)
-    
-
     def adicionaVertice(self, v):
         '''
         Inclui um vértice no grafo se ele estiver no formato correto.
@@ -259,16 +247,6 @@ class Grafo:
             return count
             
 
-    def vertices_adjacentes(self, vertice):
-        arestas = self.arestas_sobre_vertice(vertice)
-        vertices = []
-        for aresta in arestas:
-            verticeAdj = aresta.split('-')
-            verticeAdj.remove(vertice)
-            vertices.append(verticeAdj[0])
-        
-        return vertices
-
     def vertices_nao_adjacentes(self):
         ind = len(self.M)
         res = []
@@ -278,37 +256,7 @@ class Grafo:
                     item = self.N[i]+'-'+self.N[j]
                     res.append(item)
         return res
-
-    def eh_conexo(self):
-        raiz = self.N[0]
-        cores = {}
-        for v in self.N:
-            cores[v] = 'BRANCO'
-        cores[raiz] = 'CINZA'
-
-        caminho = [raiz]
-
-        while len(caminho) != 0:
-            u = caminho.pop()
-            for v in self.vertices_adjacentes(u):
-                if cores[v] == 'BRANCO':
-                    cores[v] = 'CINZA'
-                    caminho.append(v)
-                cores[u] = 'PRETO'
-
-        return list(cores.values()).count('PRETO') == len(self.N)
-
-    def eh_ponte(self, aresta):
-        grafoCopia = copy.deepcopy(self)
-        grafoCopia.remove_aresta(aresta)
-        vertices = aresta.split('-')
-        for vertice in vertices:
-            if(grafoCopia.grau(vertice)==0):
-                grafoCopia.remove_vertice(vertice)
-        eh_conexo = grafoCopia.eh_conexo()
-        del grafoCopia
-        return not eh_conexo
-
+        
             
     def arestas_sobre_vertice(self, V):
         if(self.verticeValido(V)):
@@ -368,8 +316,7 @@ class Grafo:
         else:
             # Criamos uma cópia identica do grafo original para percorremos o caminho
             # e remover as arestas percorridas
-            grafoCopia = copy.deepcopy(self)
-            # grafoCopia = copy.copy(self)
+            grafoCopia = Grafo(self.N, self.M)
             caminho = []
             raiz = None
             if(qntVerticesImpares == 0):
@@ -383,25 +330,19 @@ class Grafo:
 
             while(grafoCopia.quantidadeDeArestas() > 0):
                 # Enquanto houverem arestas para percorrer o caminho continuará a ser formado
-                arestasSobVertice = grafoCopia.arestas_sobre_vertice(raiz)
+                arestasSobVertice = self.arestas_sobre_vertice(raiz)
                 for aresta in (arestasSobVertice):
                     vertices = aresta.split(self.SEPARADOR_ARESTA)
                     vertices.remove(raiz)
                     verticeCorrente = vertices[0]
-                    
-                    eh_ponte = grafoCopia.eh_ponte(aresta)
-                    if(not eh_ponte or grafoCopia.quantidadeDeArestas() == 1):
+                    if(grafoCopia.grau(verticeCorrente) > 1 or grafoCopia.quantidadeDeArestas() == 1):
                         # Verificamos se o vértice não é uma ponte
                         # NOTA: achamos a definição de ponte um pouco abstrata e percebemos
                         # que também pode ser uma aresta de A para B que, se removido do
                         # grafo não haverá mais caminho de A para B.
+                        raiz = verticeCorrente
                         caminho.append(aresta)
                         grafoCopia.remove_aresta(aresta)
-
-                        if(grafoCopia.grau(raiz) == 0):
-                            grafoCopia.remove_vertice(raiz)
-                        raiz = verticeCorrente
-                        
                         break
             return caminho
 
@@ -431,3 +372,57 @@ class Grafo:
             grafo_str += '\n'
 
         return grafo_str
+    
+    # def ciclo_hamiltoniano(self):
+    #     corrente = 0
+    #     caminho = []
+    #     grafoCopia = copy.deepcopy(self)
+    #     while(len(caminho) < len(grafoCopia.N)):
+    #         for index in range(len(grafoCopia.N)):
+    #             if(
+    #                 (
+    #                     grafoCopia.M[corrente][index] == '-' and grafoCopia.M[index][corrente] == 1
+    #                 ) or
+    #                 (
+    #                     grafoCopia.M[corrente][index] == 1)
+    #                 ):
+    #                 caminho.append(grafoCopia.N[corrente])
+    #                 corrente = index
+    #                 print(grafoCopia.N[corrente])
+    #                 grafoCopia.remove_aresta()
+    #                 break
+    #     return corrente
+
+    def vertices_adjacentes(self, vertice):
+        arestas = self.arestas_sobre_vertice(vertice)
+        vertices = []
+        for aresta in arestas:
+            verticeAdj = aresta.split('-')
+            verticeAdj.remove(vertice)
+            vertices.append(verticeAdj[0])
+        
+        return vertices
+
+    def ciclo_hamiltoniano(self):
+        aux = self.aux_ciclo_hamiltoniano(self.N[0], [])
+        return None if(not len(aux)) else aux
+
+    def aux_ciclo_hamiltoniano(self, vertice, path):
+        if vertice not in set(path):
+            path.append(vertice)
+            if len(path) == len(self.N):
+                return path
+            # inicio do backtracking
+            todos_candidatos = []
+            for prox_ponto in self.vertices_adjacentes(vertice):
+                res_path = [i for i in path]
+                # print(res_path)
+                candidatos = self.aux_ciclo_hamiltoniano(prox_ponto, res_path)
+                if candidatos is not None:
+                    todos_candidatos.extend(candidatos)
+                    break
+                else:
+                    pass
+            return todos_candidatos
+        else:
+            return None
