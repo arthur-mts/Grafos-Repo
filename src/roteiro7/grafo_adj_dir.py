@@ -274,25 +274,31 @@ class Grafo:
 
         while vertices:
             vertMin = self.menorDistancia(table, vertices)
+
+            minINdex = self.N.index(vertMin)
+
             vertices.remove(vertMin)
 
             for verticeIndex in range(len(self.N)):
-                if(self.M[vertMin][verticeIndex] == self.SEPARADOR_ARESTA):
-                    conx = self.M[verticeIndex][vertMin]
+                verticeCorrente = self.N[verticeIndex]
+                if(self.M[minINdex][verticeIndex] == self.SEPARADOR_ARESTA):
+                    conx = self.M[verticeIndex][minINdex]
                 else:
-                    conx = self.M[vertMin][verticeIndex]
-                if(conx and self.N[verticeIndex] in vertices):
-                    if conx + table[vertMin]['carga'] and table[vertMin]['beta'] < table[self.N[verticeIndex]][
-                        'beta']:
-                        table[self.N[verticeIndex]]['carga'] = cargaMax if self.N[verticeIndex] in pontosDeRecarga else table[vertMin]['carga'] - 1
-                        table[self.N[verticeIndex]]['beta'] = table[vertMin]['beta'] + conx
-                        table[self.N[verticeIndex]]['pi'] = vertMin
+                    conx = self.M[minINdex][verticeIndex]
 
-        if table[raiz]['carga'] is None:
+
+
+                if(conx and verticeCorrente in vertices):
+                    if table[vertMin]['carga'] and conx + table[vertMin]['beta'] < table[verticeCorrente]['beta']:
+                        table[verticeCorrente]['carga'] = cargaMax if verticeCorrente in pontosDeRecarga else table[vertMin]['carga'] - 1
+                        table[verticeCorrente]['beta'] = table[vertMin]['beta'] + conx
+                        table[verticeCorrente]['pi'] = vertMin
+
+        if table[dest]['carga'] is None:
             return []
         res = list()
-        while(raiz != None):
-            res.append(raiz)
-            raiz = table[raiz]['pi']
+        while(dest != None):
+            res.append(dest)
+            dest = table[dest]['pi']
 
         return res[::-1]

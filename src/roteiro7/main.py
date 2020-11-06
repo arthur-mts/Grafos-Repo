@@ -1,8 +1,25 @@
 from grafo_adj_dir import Grafo
 
-grafo0 = Grafo(['A', 'B', 'C'])
-grafo0.adiciona_aresta('A-B')
-grafo0.adiciona_aresta('B-C')
-grafo0.adiciona_aresta('C-A')
+g1 = Grafo(N=['A','B','C','D'])
+g1.adiciona_aresta('A-B')
+g1.adiciona_aresta('A-C')
+g1.adiciona_aresta('C-B')
+g1.adiciona_aresta('C-D')
+g1.adiciona_aresta('D-B')
 
-a = grafo0.menor_caminho_drone("A", "G", 10000, 50000, ["D", "E"])
+print(g1.caminhoDrone('A', 'B', 2, 2, ['D']))
+
+
+
+g5 = Grafo(N=['A','B','C','D', 'E', 'F'])
+g5.adiciona_aresta('A-B')
+g5.adiciona_aresta('A-D')
+g5.adiciona_aresta('B-C')
+g5.adiciona_aresta('B-E')
+g5.adiciona_aresta('C-D')
+g5.adiciona_aresta('D-F')
+g5.adiciona_aresta('E-F')
+
+a = g5.caminhoDrone('A', 'F', 1, 1, ['B','C','D','E'])
+
+print(a)

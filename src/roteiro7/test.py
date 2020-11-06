@@ -1,77 +1,62 @@
-import sys 
-   
-class Graph(): 
-   
-    def __init__(self, vertices): 
-        self.V = vertices 
-        self.graph = [[0 for column in range(vertices)]  
-                    for row in range(vertices)] 
-   
-    def printSolution(self, dist): 
-        print ("Vertex tDistance from Source") 
-        for node in range(self.V): 
-            print (node, "t", dist[node]) 
-   
-    # A utility function to find the vertex with  
-    # minimum distance value, from the set of vertices  
-    # not yet included in shortest path tree 
-    def minDistance(self, dist, sptSet): 
-   
-        # Initilaize minimum distance for next node 
-        min = sys.maxsize 
-   
-        # Search not nearest vertex not in the  
-        # shortest path tree 
-        for v in range(self.V): 
-            if dist[v] < min and sptSet[v] == False: 
-                min = dist[v] 
-                min_index = v 
-   
-        return min_index 
-   
-    # Funtion that implements Dijkstra's single source  
-    # shortest path algorithm for a graph represented  
-    # using adjacency matrix representation 
-    def dijkstra(self, src): 
-   
-        dist = [sys.maxsize] * self.V 
-        dist[src] = 0
-        sptSet = [False] * self.V 
-   
-        for cout in range(self.V): 
-   
-            # Pick the minimum distance vertex from  
-            # the set of vertices not yet processed.  
-            # u is always equal to src in first iteration 
-            u = self.minDistance(dist, sptSet) 
-   
-            # Put the minimum distance vertex in the  
-            # shotest path tree 
-            sptSet[u] = True
-   
-            # Update dist value of the adjacent vertices  
-            # of the picked vertex only if the current  
-            # distance is greater than new distance and 
-            # the vertex in not in the shotest path tree 
-            for v in range(self.V): 
-                if self.graph[u][v] > 0 and sptSet[v] == False and dist[v] > dist[u] + self.graph[u][v]: 
-                    dist[v] = dist[u] + self.graph[u][v] 
-   
-        self.printSolution(dist) 
-   
-# Driver program 
-g = Graph(9) 
-g.graph = [[0, 4, 0, 0, 0, 0, 0, 8, 0], 
-        [4, 0, 8, 0, 0, 0, 0, 11, 0], 
-        [0, 8, 0, 7, 0, 4, 0, 0, 2], 
-        [0, 0, 7, 0, 9, 14, 0, 0, 0], 
-        [0, 0, 0, 9, 0, 10, 0, 0, 0], 
-        [0, 0, 4, 14, 10, 0, 2, 0, 0], 
-        [0, 0, 0, 0, 0, 2, 0, 1, 6], 
-        [8, 11, 0, 0, 0, 0, 1, 0, 7], 
-        [0, 0, 2, 0, 0, 0, 6, 7, 0] 
-        ]; 
-   
-g.dijkstra(0); 
-  
-# This code is contributed by Divyanshu Mehta 
+## ARTHUR MAURÍCIO
+## JONATAS DUARTE
+
+import unittest
+
+from grafo_adj_dir import Grafo
+
+class TesteDrone(unittest.TestCase):
+    def setUp(self):
+        #grafo 1
+        self.g1 = Grafo(N=['A','B','C','D'])
+        self.g1.adiciona_aresta('A-B')
+        self.g1.adiciona_aresta('A-C')
+        self.g1.adiciona_aresta('C-B')
+        self.g1.adiciona_aresta('C-D')
+        self.g1.adiciona_aresta('D-B')
+        
+        #grafo 2
+        self.g2 = Grafo(N=['A','B'])
+        self.g2.adiciona_aresta('A-B')
+       
+        #grafo 3
+        self.g3 = Grafo(N=['A','B','C','D', 'E'])
+        self.g3.adiciona_aresta('A-B')
+        self.g3.adiciona_aresta('A-C')
+        self.g3.adiciona_aresta('C-B')
+        self.g3.adiciona_aresta('C-D')
+        self.g3.adiciona_aresta('D-E')
+        self.g3.adiciona_aresta('B-E')
+
+        #grafo 4
+        self.g4 = Grafo(N=['A','B','C','D'])
+        self.g4.adiciona_aresta('A-B')
+        self.g4.adiciona_aresta('A-C')
+        self.g4.adiciona_aresta('A-B')
+        self.g4.adiciona_aresta('B-C')
+        self.g4.adiciona_aresta('C-D')
+
+        #grafo 5
+        self.g5 = Grafo(N=['A','B','C','D', 'E', 'F'])
+        self.g5.adiciona_aresta('A-B')
+        self.g5.adiciona_aresta('A-D')
+        self.g5.adiciona_aresta('B-C')
+        self.g5.adiciona_aresta('B-E')
+        self.g5.adiciona_aresta('C-D')
+        self.g5.adiciona_aresta('D-F')
+        self.g5.adiciona_aresta('E-F')
+
+
+    def testeMenorCaminhoDrone(self):
+        self.assertListEqual(self.g1.caminhoDrone('A', 'B', 2, 2, ['D']), ['A','B'])
+
+        self.assertListEqual(self.g2.caminhoDrone('A', 'B', 1, 1, []), ['A', 'B'])
+
+        self.assertListEqual(self.g3.caminhoDrone('A', 'E', 1, 2, ['B']), ['A','B','C'])
+
+        self.assertListEqual(self.g4.caminhoDrone('A', 'D', 2, 2, ['B']), ['A','C','D'])
+
+        self.assertListEqual(self.g4.caminhoDrone('A', 'D', 1, 2, ['B','C']), ['A','C','D'])
+
+        self.assertListEqual(self.g5.caminhoDrone('A', 'F', 1, 1, ['B','C','D','E']), ['A','D','F'])
+        
