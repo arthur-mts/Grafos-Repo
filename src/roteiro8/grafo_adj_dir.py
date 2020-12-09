@@ -338,37 +338,55 @@ class Grafo:
                 if(i > maior):
                     maior = i
         
-        for i in range(0, maior):
+        for i in range(menor, maior + 1):
             buckets[i] = []
-            
         
         for i in range(len(self.M)):
             for j in range(len(self.M)):
                 if(self.M[i][j] > 0):
-                    buckets[self.M[i][j]] = (self.N[i], self.N[j])
+                    buckets[self.M[i][j]].append(self.N[i]+"-"+self.N[j])
                     
         return buckets
     
-    def kruskalModificado(self):
+    
+    def union(self, pais, i, j): 
+        a = self.find(pais, i) 
+        b = self.find(pais, j) 
+        pais[a] = b
+        return pais
+
+    def find(self, pais, i): 
+        while pais[i] != i: 
+            i = pais[i] 
+        return i
         
+    def encontrarMenorArestaNosBuckets(self, buckets, pais):
+        for peso in list(buckets.keys()):
+            for aresta in buckets[peso]:
+                ## VERIFICANDO SE ESSA ARESTA FORMARIA UM LAÇO
+                verticeA =  aresta.split('-')[0]
+                verticeB =  aresta.split('-')[1]
+                if(self.find(pais, verticeA) != self.find(pais, verticeB)):
+                    return buckets[peso][0]
+                
+    def kruskalModificado(self):
         buckets = self.gerarBucketsPorPesoDeAresta()
-        #print(buckets)
+        
         T = []
         
-        j = 0
+        pais = { vertice : vertice for vertice in self.N}
         
-        H = {i:[] for i in list(range(0,max(list(buckets.keys()))+1))}  
-   
-        #print(H)
+        print(buckets)
+        print(pais)
         while(len(T) < len(self.N) - 1):
-            if(H[j] == []):
-                while(True):
-                    if(len(buckets[j]) > 0):
-                        break
-                    j+=1
-                    
-                H[j] = buckets[j]
-                print(H)
+            menorAresta = self.encontrarMenorArestaNosBuckets(buckets, pais)
+            verticeA = menorAresta.split('-')[0]
+            verticeB = menorAresta.split('-')[1]
+            pais = self.union(pais, verticeA, verticeB)
+            print(pais)
+            T.append(menorAresta)
+        return T
+            
                 
                 
         

@@ -6,7 +6,7 @@ g1.adiciona_aresta('A-B', 3)
 g1.adiciona_aresta('A-C', 6)
 g1.adiciona_aresta('B-C', 2)
 print(g1)
-g1.kruskalModificado()
+print(g1.kruskalModificado())
 
 
 
