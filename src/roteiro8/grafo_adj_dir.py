@@ -323,7 +323,57 @@ class Grafo:
             dest = table[dest]['pi']
 
         return res[::-1]
+        
+   
     
+    def gerarBucketsPorPesoDeAresta(self):
+        buckets = {}
+        menor = float('Inf')
+        maior = 0
+        
+        for linha in self.M:
+            for i in linha:
+                if(i < menor and i > 0):
+                    menor = i
+                if(i > maior):
+                    maior = i
+        
+        for i in range(0, maior):
+            buckets[i] = []
+            
+        
+        for i in range(len(self.M)):
+            for j in range(len(self.M)):
+                if(self.M[i][j] > 0):
+                    buckets[self.M[i][j]] = (self.N[i], self.N[j])
+                    
+        return buckets
+    
+    def kruskalModificado(self):
+        
+        buckets = self.gerarBucketsPorPesoDeAresta()
+        #print(buckets)
+        T = []
+        
+        j = 0
+        
+        H = {i:[] for i in list(range(0,max(list(buckets.keys()))+1))}  
+   
+        #print(H)
+        while(len(T) < len(self.N) - 1):
+            if(H[j] == []):
+                while(True):
+                    if(len(buckets[j]) > 0):
+                        break
+                    j+=1
+                    
+                H[j] = buckets[j]
+                print(H)
+                
+                
+        
+        
+        
     def primModificado(self):
 
         # result = Grafo(copy.deepcopy(self.N), [[ 0 for i in range(len(self.N))] for i in range(len(self.N))])
